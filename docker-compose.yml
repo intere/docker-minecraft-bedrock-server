@@ -1,0 +1,40 @@
+version: "3.8"
+
+services:
+  mc:
+    # image: itzg/docker-minecraft-bedrock-server
+    build: .
+    environment:
+      EULA: true
+      # see "level-type" in https://minecraft.fandom.com/wiki/Server.properties#Bedrock_Edition_3
+      # Can be one of: FLAT, LEGACY, DEFAULT
+      LEVEL_TYPE: "LEGACY"
+      ALLOW_FLIGHT: false
+      MODE: "survival"
+      PVP: false
+      DIFFICULTY: "easy"
+      GENERATE_STRUCTURES: true
+      SPAWN_NPCS: true
+      LEVEL_NAME: "Nico's World (Legacy)"
+      LEVEL_SEED: "Nicos_World-D"
+      OVERRIDE_ICON: true
+      ICON: "https://github.com/intere/GeoTrackKit/assets/2284832/3c82b5d3-0d96-42ea-b7d0-dc389fbbfaa0"
+      VERSION: "LATEST"
+      TZ: "America/Denver"
+      SERVER_NAME: "Nico's Server"
+      MAX_PLAYERS: 10 # default
+      ONLINE_MODE: true
+      SERVER_AUTHORITATIVE_MOVEMENT: "server-auth"
+      VIEW_DISTANCE: 15  # defaults to 10
+      ENABLE_LAN_VISIBILITY: true
+      
+    ports:
+      - "19132:19132/udp"
+    volumes:
+      - mc-data:/data
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
+
+volumes:
+  mc-data:
