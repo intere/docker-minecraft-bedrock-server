@@ -25,16 +25,17 @@ services:
       MAX_PLAYERS: 10 # default
       ONLINE_MODE: true
       SERVER_AUTHORITATIVE_MOVEMENT: "server-auth"
-      VIEW_DISTANCE: 15  # defaults to 10
+      VIEW_DISTANCE: 10  # defaults to 10
       ENABLE_LAN_VISIBILITY: true
+      ALLOW_CHEATS: true
       
     ports:
       - "19132:19132/udp"
     volumes:
-      - mc-data:/data
+      - mc-data-easy:/data
     stdin_open: true
     tty: true
     restart: unless-stopped
 
 volumes:
-  mc-data:
+  mc-data-easy:
