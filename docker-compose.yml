@@ -1,7 +1,7 @@
 version: "3.8"
 
 services:
-  mc:
+  mc-peaceful:
     # image: itzg/docker-minecraft-bedrock-server
     build: .
     environment:
@@ -12,30 +12,35 @@ services:
       ALLOW_FLIGHT: false
       MODE: "survival"
       PVP: false
-      DIFFICULTY: "easy"
+      DIFFICULTY: "peaceful"
       GENERATE_STRUCTURES: true
       SPAWN_NPCS: true
       LEVEL_NAME: "Nico's World (Legacy)"
-      LEVEL_SEED: "Nicos_World-D"
+      LEVEL_SEED: "Nicos_World-D-peaceful"
       OVERRIDE_ICON: true
       ICON: "https://github.com/intere/GeoTrackKit/assets/2284832/3c82b5d3-0d96-42ea-b7d0-dc389fbbfaa0"
       VERSION: "LATEST"
       TZ: "America/Denver"
-      SERVER_NAME: "Nico's Server"
+      SERVER_NAME: "Nico's Peaceful Server"
       MAX_PLAYERS: 10 # default
       ONLINE_MODE: true
       SERVER_AUTHORITATIVE_MOVEMENT: "server-auth"
       VIEW_DISTANCE: 10  # defaults to 10
       ENABLE_LAN_VISIBILITY: true
       ALLOW_CHEATS: true
+      OPS: "2535472500014206,2535459601956208"
+
+      # GirEatsSalad      xuid: 2535472500014206
+      # PenguinChipsNE1   xuid: 2535459601956208
+      # UnicornBaconSap   xuid: 2535410453581639
       
     ports:
-      - "19132:19132/udp"
+      - "19133:19132/udp"
     volumes:
-      - mc-data-easy:/data
+      - mc-data-peaceful:/data
     stdin_open: true
     tty: true
     restart: unless-stopped
 
 volumes:
-  mc-data-easy:
+  mc-data-peaceful:
