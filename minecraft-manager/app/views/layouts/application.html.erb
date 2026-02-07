@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title><%= content_for(:title) || "Minecraft Server Manager" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta charset="utf-8">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <%= stylesheet_link_tag :app %>
+  </head>
+
+  <body class="bg-gray-900 text-gray-100 min-h-screen">
+    <nav class="bg-gray-800 border-b border-gray-700 shadow-lg">
+      <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+        <a href="<%= root_path %>" class="flex items-center gap-3 text-xl font-bold text-emerald-400 no-underline hover:text-emerald-300">
+          <svg viewBox="0 0 24 24" width="32" height="32" fill="currentColor">
+            <rect x="2" y="2" width="20" height="20" rx="2" fill="#2d5a27"/>
+            <rect x="4" y="4" width="4" height="4" fill="#6b8f3c"/>
+            <rect x="8" y="4" width="4" height="4" fill="#4a7a2e"/>
+            <rect x="12" y="4" width="4" height="4" fill="#6b8f3c"/>
+            <rect x="16" y="4" width="4" height="4" fill="#4a7a2e"/>
+            <rect x="4" y="8" width="4" height="4" fill="#4a7a2e"/>
+            <rect x="8" y="8" width="4" height="4" fill="#6b8f3c"/>
+            <rect x="12" y="8" width="4" height="4" fill="#4a7a2e"/>
+            <rect x="16" y="8" width="4" height="4" fill="#6b8f3c"/>
+            <rect x="4" y="12" width="4" height="4" fill="#8B6914"/>
+            <rect x="8" y="12" width="4" height="4" fill="#6d5210"/>
+            <rect x="12" y="12" width="4" height="4" fill="#8B6914"/>
+            <rect x="16" y="12" width="4" height="4" fill="#6d5210"/>
+            <rect x="4" y="16" width="4" height="4" fill="#6d5210"/>
+            <rect x="8" y="16" width="4" height="4" fill="#8B6914"/>
+            <rect x="12" y="16" width="4" height="4" fill="#6d5210"/>
+            <rect x="16" y="16" width="4" height="4" fill="#8B6914"/>
+          </svg>
+          Minecraft Server Manager
+        </a>
+        <a href="<%= new_minecraft_server_path %>" class="btn btn-primary">
+          + New Server
+        </a>
+      </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 py-6">
+      <% if notice %>
+        <div class="flash flash-notice"><%= notice %></div>
+      <% end %>
+      <% if alert %>
+        <div class="flash flash-alert"><%= alert %></div>
+      <% end %>
+
+      <%= yield %>
+    </main>
+  </body>
+</html>

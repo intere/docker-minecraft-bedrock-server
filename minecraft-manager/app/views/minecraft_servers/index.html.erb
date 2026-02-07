@@ -1,0 +1,63 @@
+<div class="flex items-center justify-between mb-6">
+  <h1 class="text-2xl font-bold">Minecraft Servers</h1>
+  <a href="<%= new_minecraft_server_path %>" class="btn btn-primary btn-lg">+ New Server</a>
+</div>
+
+<% if @servers.any? %>
+  <div class="grid grid-cols-1 md-grid-cols-2 gap-4">
+    <% @servers.each do |server| %>
+      <a href="<%= minecraft_server_path(server) %>" class="server-card-link">
+        <div class="server-card">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-lg font-bold"><%= server.server_name %></span>
+            <%= status_badge(server) %>
+          </div>
+          <div class="text-sm text-gray-400" style="margin-bottom: 0.75rem;">
+            <%= server.container_name %>
+          </div>
+          <div class="grid grid-cols-3 gap-2 text-sm">
+            <div>
+              <span class="text-gray-500">Mode</span><br>
+              <span class="font-medium"><%= raw gamemode_icon(server.gamemode) %> <%= server.gamemode.capitalize %></span>
+            </div>
+            <div>
+              <span class="text-gray-500">Difficulty</span><br>
+              <span class="font-medium <%= difficulty_color(server.difficulty) %>"><%= server.difficulty.capitalize %></span>
+            </div>
+            <div>
+              <span class="text-gray-500">Port</span><br>
+              <span class="font-medium"><%= server.server_port %></span>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-2 text-sm mt-2">
+            <div>
+              <span class="text-gray-500">Players</span><br>
+              <span class="font-medium"><%= server.max_players %> max</span>
+            </div>
+            <div>
+              <span class="text-gray-500">Version</span><br>
+              <span class="font-medium"><%= server.version %></span>
+            </div>
+            <div>
+              <span class="text-gray-500">World</span><br>
+              <span class="font-medium"><%= server.level_name %></span>
+            </div>
+          </div>
+        </div>
+      </a>
+    <% end %>
+  </div>
+<% else %>
+  <div class="empty-state">
+    <div class="empty-state-icon">
+      <svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="#6b7280" stroke-width="1.5" style="display:inline-block">
+        <rect x="2" y="2" width="20" height="20" rx="3"/>
+        <line x1="12" y1="8" x2="12" y2="16"/>
+        <line x1="8" y1="12" x2="16" y2="12"/>
+      </svg>
+    </div>
+    <div class="empty-state-title">No Minecraft servers yet</div>
+    <p class="text-gray-500 mb-4">Create your first server to get started.</p>
+    <a href="<%= new_minecraft_server_path %>" class="btn btn-primary btn-lg">+ Create Server</a>
+  </div>
+<% end %>

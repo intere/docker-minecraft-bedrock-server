@@ -1,0 +1,199 @@
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <h1 class="text-2xl font-bold"><%= @server.server_name %></h1>
+    <p class="text-gray-400 text-sm mt-1"><%= @server.container_name %></p>
+  </div>
+  <div class="flex items-center gap-2">
+    <%= status_badge(@server) %>
+  </div>
+</div>
+
+<!-- Action Buttons -->
+<div class="flex items-center gap-2 mb-6 flex-wrap">
+  <% if @server.stopped? %>
+    <%= button_to "Start Server", start_minecraft_server_path(@server), method: :post, class: "btn btn-primary" %>
+  <% else %>
+    <%= button_to "Stop Server", stop_minecraft_server_path(@server), method: :post, class: "btn btn-danger" %>
+    <%= button_to "Restart Server", restart_minecraft_server_path(@server), method: :post, class: "btn btn-warning" %>
+  <% end %>
+  <a href="<%= edit_minecraft_server_path(@server) %>" class="btn btn-info">Edit Configuration</a>
+  <a href="<%= logs_minecraft_server_path(@server) %>" class="btn btn-secondary">View Logs</a>
+  <%= button_to "Delete", minecraft_server_path(@server), method: :delete, class: "btn btn-danger btn-sm", data: { turbo_confirm: "Are you sure you want to delete '#{@server.server_name}'? This cannot be undone." } %>
+</div>
+
+<!-- Core Settings -->
+<div class="card mb-4">
+  <div class="card-header">
+    <h2 class="text-lg font-semibold text-emerald-400">Core Settings</h2>
+  </div>
+  <div class="card-body p-0">
+    <table class="detail-table">
+      <tr><th>Server Name</th><td><%= @server.server_name %></td></tr>
+      <tr><th>Game Mode</th><td><%= raw gamemode_icon(@server.gamemode) %> <%= @server.gamemode.capitalize %></td></tr>
+      <tr><th>Force Game Mode</th><td><%= bool_display(@server.force_gamemode) %></td></tr>
+      <tr><th>Difficulty</th><td><span class="<%= difficulty_color(@server.difficulty) %>"><%= @server.difficulty.capitalize %></span></td></tr>
+      <tr><th>Allow Cheats</th><td><%= bool_display(@server.allow_cheats) %></td></tr>
+      <tr><th>Max Players</th><td><%= @server.max_players %></td></tr>
+      <tr><th>Online Mode</th><td><%= bool_display(@server.online_mode) %></td></tr>
+      <tr><th>Default Permission Level</th><td><%= @server.default_player_permission_level.capitalize %></td></tr>
+      <tr><th>Player Idle Timeout</th><td><%= @server.player_idle_timeout %> min</td></tr>
+      <tr><th>OP Permission Level</th><td><%= @server.op_permission_level %></td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- Network Settings -->
+<div class="card mb-4">
+  <div class="card-header">
+    <h2 class="text-lg font-semibold text-emerald-400">Network</h2>
+  </div>
+  <div class="card-body p-0">
+    <table class="detail-table">
+      <tr><th>IPv4 Port (UDP)</th><td><%= @server.server_port %></td></tr>
+      <tr><th>IPv6 Port (UDP)</th><td><%= @server.server_port_v6 %></td></tr>
+      <tr><th>LAN Visibility</th><td><%= bool_display(@server.enable_lan_visibility) %></td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- World Settings -->
+<div class="card mb-4">
+  <div class="card-header">
+    <h2 class="text-lg font-semibold text-emerald-400">World</h2>
+  </div>
+  <div class="card-body p-0">
+    <table class="detail-table">
+      <tr><th>Level Name</th><td><%= @server.level_name %></td></tr>
+      <tr><th>Level Seed</th><td><%= @server.level_seed.present? ? @server.level_seed : "(random)" %></td></tr>
+      <tr><th>Level Type</th><td><%= @server.level_type %></td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- Performance Settings -->
+<div class="card mb-4">
+  <div class="card-header">
+    <h2 class="text-lg font-semibold text-emerald-400">Performance</h2>
+  </div>
+  <div class="card-body p-0">
+    <table class="detail-table">
+      <tr><th>View Distance</th><td><%= @server.view_distance %> chunks</td></tr>
+      <tr><th>Tick Distance</th><td><%= @server.tick_distance %> chunks</td></tr>
+      <tr><th>Max Threads</th><td><%= @server.max_threads == 0 ? "Auto" : @server.max_threads %></td></tr>
+      <tr><th>Compression Threshold</th><td><%= @server.compression_threshold %> bytes</td></tr>
+      <tr><th>Compression Algorithm</th><td><%= @server.compression_algorithm %></td></tr>
+      <tr><th>Client Chunk Gen</th><td><%= bool_display(@server.client_side_chunk_generation_enabled) %></td></tr>
+      <tr><th>Build Radius Ratio</th><td><%= @server.server_build_radius_ratio %></td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- Access Control -->
+<div class="card mb-4">
+  <div class="card-header">
+    <h2 class="text-lg font-semibold text-emerald-400">Access Control</h2>
+  </div>
+  <div class="card-body p-0">
+    <table class="detail-table">
+      <tr><th>Allow List</th><td><%= bool_display(@server.allow_list) %></td></tr>
+      <tr><th>Texture Pack Required</th><td><%= bool_display(@server.texturepack_required) %></td></tr>
+      <tr><th>Allow List Users</th><td><%= @server.allow_list_users.present? ? @server.allow_list_users : "(none)" %></td></tr>
+      <tr><th>Operators (XUIDs)</th><td><%= @server.ops.present? ? @server.ops : "(none)" %></td></tr>
+      <tr><th>Members (XUIDs)</th><td><%= @server.members.present? ? @server.members : "(none)" %></td></tr>
+      <tr><th>Visitors (XUIDs)</th><td><%= @server.visitors.present? ? @server.visitors : "(none)" %></td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- Anti-Cheat -->
+<div class="card mb-4">
+  <div class="card-header">
+    <h2 class="text-lg font-semibold text-emerald-400">Anti-Cheat / Movement Authority</h2>
+  </div>
+  <div class="card-body p-0">
+    <table class="detail-table">
+      <tr><th>Movement Authority</th><td><%= @server.server_authoritative_movement %></td></tr>
+      <tr><th>Position Threshold</th><td><%= @server.player_position_acceptance_threshold %></td></tr>
+      <tr><th>Movement Score</th><td><%= @server.player_movement_score_threshold %></td></tr>
+      <tr><th>Action Direction</th><td><%= @server.player_movement_action_direction_threshold %></td></tr>
+      <tr><th>Distance Threshold</th><td><%= @server.player_movement_distance_threshold %></td></tr>
+      <tr><th>Duration Threshold</th><td><%= @server.player_movement_duration_threshold_in_ms %> ms</td></tr>
+      <tr><th>Correct Movement</th><td><%= bool_display(@server.correct_player_movement) %></td></tr>
+      <tr><th>Auth Block Breaking</th><td><%= bool_display(@server.server_authoritative_block_breaking) %></td></tr>
+      <tr><th>Pick Range Scalar</th><td><%= @server.server_authoritative_block_breaking_pick_range_scalar %></td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- Chat & Appearance -->
+<div class="card mb-4">
+  <div class="card-header">
+    <h2 class="text-lg font-semibold text-emerald-400">Chat, Interaction & Appearance</h2>
+  </div>
+  <div class="card-body p-0">
+    <table class="detail-table">
+      <tr><th>Chat Restriction</th><td><%= @server.chat_restriction %></td></tr>
+      <tr><th>Disable Player Interaction</th><td><%= bool_display(@server.disable_player_interaction) %></td></tr>
+      <tr><th>Disable Persona</th><td><%= bool_display(@server.disable_persona) %></td></tr>
+      <tr><th>Disable Custom Skins</th><td><%= bool_display(@server.disable_custom_skins) %></td></tr>
+      <tr><th>Block IDs as Hashes</th><td><%= bool_display(@server.block_network_ids_are_hashes) %></td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- Logging & Telemetry -->
+<div class="card mb-4">
+  <div class="card-header">
+    <h2 class="text-lg font-semibold text-emerald-400">Logging & Telemetry</h2>
+  </div>
+  <div class="card-body p-0">
+    <table class="detail-table">
+      <tr><th>Content Log File</th><td><%= bool_display(@server.content_log_file_enabled) %></td></tr>
+      <tr><th>Content Log Level</th><td><%= @server.content_log_level %></td></tr>
+      <tr><th>Content Log Console</th><td><%= bool_display(@server.content_log_console_output_enabled) %></td></tr>
+      <tr><th>Server Telemetry</th><td><%= bool_display(@server.emit_server_telemetry) %></td></tr>
+      <tr><th>MSA Gamertags Only</th><td><%= bool_display(@server.msa_gamertags_only) %></td></tr>
+      <tr><th>Item Transaction Log</th><td><%= bool_display(@server.item_transaction_logging_enabled) %></td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- Script Settings -->
+<div class="card mb-4">
+  <div class="card-header">
+    <h2 class="text-lg font-semibold text-emerald-400">Script Debugging & Watchdog</h2>
+  </div>
+  <div class="card-body p-0">
+    <table class="detail-table">
+      <tr><th>Outbound Debugging</th><td><%= bool_display(@server.allow_outbound_script_debugging) %></td></tr>
+      <tr><th>Inbound Debugging</th><td><%= bool_display(@server.allow_inbound_script_debugging) %></td></tr>
+      <tr><th>Debug Port</th><td><%= @server.force_inbound_debug_port %></td></tr>
+      <tr><th>Auto Attach</th><td><%= @server.script_debugger_auto_attach %></td></tr>
+      <tr><th>Attach Address</th><td><%= @server.script_debugger_auto_attach_connect_address %></td></tr>
+      <tr><th>Watchdog Enabled</th><td><%= bool_display(@server.script_watchdog_enable) %></td></tr>
+      <tr><th>Exception Handling</th><td><%= bool_display(@server.script_watchdog_enable_exception_handling) %></td></tr>
+      <tr><th>Shutdown on Error</th><td><%= bool_display(@server.script_watchdog_enable_shutdown) %></td></tr>
+      <tr><th>Hang Exception</th><td><%= bool_display(@server.script_watchdog_hang_exception) %></td></tr>
+      <tr><th>Hang Threshold</th><td><%= @server.script_watchdog_hang_threshold %> ms</td></tr>
+      <tr><th>Spike Threshold</th><td><%= @server.script_watchdog_spike_threshold %> ms</td></tr>
+      <tr><th>Slow Threshold</th><td><%= @server.script_watchdog_slow_threshold %> ms</td></tr>
+      <tr><th>Memory Warning</th><td><%= @server.script_watchdog_memory_warning %> MB</td></tr>
+      <tr><th>Memory Limit</th><td><%= @server.script_watchdog_memory_limit %> MB</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- Container Settings -->
+<div class="card mb-4">
+  <div class="card-header">
+    <h2 class="text-lg font-semibold text-emerald-400">Container</h2>
+  </div>
+  <div class="card-body p-0">
+    <table class="detail-table">
+      <tr><th>Version</th><td><%= @server.version %></td></tr>
+      <tr><th>SSH Enabled</th><td><%= bool_display(@server.enable_ssh) %></td></tr>
+      <tr><th>Container ID</th><td class="text-xs"><%= @server.container_id.present? ? @server.container_id[0..11] : "(not running)" %></td></tr>
+      <tr><th>Data Volume</th><td class="text-xs"><%= @server.data_volume_path %></td></tr>
+    </table>
+  </div>
+</div>
