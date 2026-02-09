@@ -25,11 +25,11 @@
       </div>
     </div>
 
-    <!-- ==================== CORE GAMEPLAY ==================== -->
+    <!-- ==================== CORE GAMEPLAY (SIMPLE) ==================== -->
     <div class="form-section">
       <h3 class="form-section-title">
         <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor"><path d="M10 2L2 7l8 5 8-5-8-5zM2 13l8 5 8-5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
-        Core Gameplay
+        Gameplay
       </h3>
       <div class="grid grid-cols-1 md-grid-cols-3 gap-4">
         <%= select_field f, :gamemode,
@@ -40,44 +40,8 @@
             MinecraftServer::DIFFICULTIES.map { |d| [d.capitalize, d] },
             label: "Difficulty",
             hint: "World difficulty level" %>
-        <%= select_field f, :default_player_permission_level,
-            MinecraftServer::PERMISSION_LEVELS.map { |p| [p.capitalize, p] },
-            label: "Default Permission",
-            hint: "Permission level for new players" %>
-      </div>
-      <div class="grid grid-cols-1 md-grid-cols-3 gap-4 mt-4">
         <%= number_field_with_range f, :max_players, label: "Max Players", min: 1, max: 100,
             hint: "1-100 concurrent players" %>
-        <%= number_field_with_range f, :player_idle_timeout, label: "Idle Timeout (min)", min: 0,
-            hint: "0 = no timeout" %>
-        <%= number_field_with_range f, :op_permission_level, label: "OP Permission Level", min: 1, max: 4,
-            hint: "1 (lowest) to 4 (highest)" %>
-      </div>
-      <div class="grid grid-cols-1 md-grid-cols-3 gap-4 mt-4">
-        <%= toggle_field f, :force_gamemode, label: "Force Game Mode",
-            hint: "Force default mode on every join, not just first join" %>
-        <%= toggle_field f, :allow_cheats, label: "Allow Cheats",
-            hint: "Enable cheat commands for players" %>
-        <%= toggle_field f, :online_mode, label: "Online Mode (Xbox Live)",
-            hint: "Require Xbox Live authentication" %>
-      </div>
-    </div>
-
-    <!-- ==================== NETWORK ==================== -->
-    <div class="form-section">
-      <h3 class="form-section-title">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="10" cy="10" r="8"/><path d="M2 10h16M10 2c-2.5 3-2.5 11 0 16M10 2c2.5 3 2.5 11 0 16"/></svg>
-        Network
-      </h3>
-      <div class="grid grid-cols-1 md-grid-cols-3 gap-4">
-        <%= number_field_with_range f, :server_port, label: "IPv4 Port (UDP)", min: 1024, max: 65535,
-            hint: "Host-side UDP port for IPv4. Auto-assigned if blank." %>
-        <%= number_field_with_range f, :server_port_v6, label: "IPv6 Port (UDP)", min: 1024, max: 65535,
-            hint: "Host-side UDP port for IPv6. Auto-assigned if blank." %>
-        <div>
-          <%= toggle_field f, :enable_lan_visibility, label: "LAN Visibility",
-              hint: "Respond to LAN discovery broadcasts" %>
-        </div>
       </div>
     </div>
 
@@ -101,248 +65,315 @@
       </div>
     </div>
 
-    <!-- ==================== PERFORMANCE ==================== -->
-    <div class="form-section">
-      <h3 class="form-section-title">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 17V8l4-5h6l4 5v9H3z"/><path d="M7 17v-5h6v5"/></svg>
-        Performance
-      </h3>
-      <div class="grid grid-cols-1 md-grid-cols-3 gap-4">
-        <%= number_field_with_range f, :view_distance, label: "View Distance (chunks)", min: 5, max: 96,
-            hint: "5-96 chunks. Higher = more CPU/RAM" %>
-        <%= number_field_with_range f, :tick_distance, label: "Tick Distance (chunks)", min: 4, max: 12,
-            hint: "4-12 chunks simulated around players" %>
-        <%= number_field_with_range f, :max_threads, label: "Max Threads", min: 0,
-            hint: "0 = automatic (use all cores)" %>
-      </div>
-      <div class="grid grid-cols-1 md-grid-cols-3 gap-4 mt-4">
-        <%= number_field_with_range f, :compression_threshold, label: "Compression Threshold (bytes)", min: 1, max: 65535,
-            hint: "Min packet size before compression (1-65535)" %>
-        <%= select_field f, :compression_algorithm,
-            MinecraftServer::COMPRESSION_ALGORITHMS.map { |a| [a.upcase, a] },
-            label: "Compression Algorithm",
-            hint: "zlib = better ratio, snappy = faster" %>
-        <div class="form-group">
-          <%= f.label :server_build_radius_ratio, "Build Radius Ratio", class: "form-label" %>
-          <%= f.text_field :server_build_radius_ratio, class: "form-input", placeholder: "Disabled" %>
-          <p class="form-hint">"Disabled" or 0.0-1.0. Ratio of view distance for server-side generation.</p>
-        </div>
-      </div>
-      <div class="mt-4">
-        <%= toggle_field f, :client_side_chunk_generation_enabled, label: "Client-Side Chunk Generation",
-            hint: "Allow clients to generate visual chunks locally" %>
-      </div>
-    </div>
-
-    <!-- ==================== ACCESS CONTROL ==================== -->
+    <!-- ==================== OPERATORS (SIMPLE) ==================== -->
     <div class="form-section">
       <h3 class="form-section-title">
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="9" width="14" height="9" rx="2"/><path d="M6 9V6a4 4 0 018 0v3"/><circle cx="10" cy="14" r="1.5"/></svg>
-        Access Control
+        Operators
+        <span class="text-gray-500 text-sm font-normal">(optional)</span>
       </h3>
-      <div class="grid grid-cols-1 md-grid-cols-2 gap-4">
-        <%= toggle_field f, :allow_list, label: "Enable Allow List",
-            hint: "Require players to be in allowlist.json" %>
-        <%= toggle_field f, :texturepack_required, label: "Texture Pack Required",
-            hint: "Force clients to use server resource packs" %>
-      </div>
-      <div class="grid grid-cols-1 md-grid-cols-2 gap-4 mt-4">
-        <%= text_input f, :allow_list_users, label: "Allow List Users",
-            hint: "Comma-separated gamertags, optionally with XUIDs: player1:XUID1,player2:XUID2",
-            placeholder: "Steve:1234567890,Alex:0987654321" %>
-        <%= text_input f, :ops, label: "Operators (XUIDs)",
-            hint: "Comma-separated XUIDs for operator permissions",
+      <div class="grid grid-cols-1 gap-4">
+        <%= text_input f, :ops, label: "Operator XUIDs",
+            hint: "Optional. Comma-separated Xbox User IDs to grant operator (admin) permissions. You can add these later.",
             placeholder: "1234567890,0987654321" %>
       </div>
-      <div class="grid grid-cols-1 md-grid-cols-2 gap-4 mt-4">
-        <%= text_input f, :members, label: "Members (XUIDs)",
-            hint: "Comma-separated XUIDs for member permissions",
-            placeholder: "1234567890" %>
-        <%= text_input f, :visitors, label: "Visitors (XUIDs)",
-            hint: "Comma-separated XUIDs for visitor permissions",
-            placeholder: "1234567890" %>
-      </div>
     </div>
 
-    <!-- ==================== ANTI-CHEAT ==================== -->
-    <div class="form-section">
-      <h3 class="form-section-title">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 2l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V5l7-3z"/><path d="M7 10l2 2 4-4"/></svg>
-        Anti-Cheat / Movement Authority
-      </h3>
-      <div class="grid grid-cols-1 md-grid-cols-3 gap-4">
-        <%= select_field f, :server_authoritative_movement,
-            MinecraftServer::MOVEMENT_AUTHORITIES.map { |m| [m, m] },
-            label: "Movement Authority",
-            hint: "server-auth = server validates movement" %>
-        <div class="form-group">
-          <%= f.label :player_position_acceptance_threshold, "Position Acceptance Threshold", class: "form-label" %>
-          <%= f.number_field :player_position_acceptance_threshold, min: 0, step: 0.1, class: "form-input" %>
-          <p class="form-hint">Tolerance for position discrepancies (>= 0.0)</p>
+    <!-- ==================== ADVANCED TOGGLE ==================== -->
+    <div class="form-section" style="text-align: center; border-bottom: none;">
+      <button type="button" id="toggle-advanced" class="btn btn-secondary">
+        Show Advanced Settings
+      </button>
+    </div>
+
+    <!-- ==================== ADVANCED SETTINGS ==================== -->
+    <div id="advanced-settings" style="display: none;">
+
+      <!-- ==================== CORE GAMEPLAY (ADVANCED) ==================== -->
+      <div class="form-section">
+        <h3 class="form-section-title">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor"><path d="M10 2L2 7l8 5 8-5-8-5zM2 13l8 5 8-5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+          Gameplay (Advanced)
+        </h3>
+        <div class="grid grid-cols-1 md-grid-cols-3 gap-4">
+          <%= select_field f, :default_player_permission_level,
+              MinecraftServer::PERMISSION_LEVELS.map { |p| [p.capitalize, p] },
+              label: "Default Permission",
+              hint: "Permission level for new players" %>
+          <%= number_field_with_range f, :player_idle_timeout, label: "Idle Timeout (min)", min: 0,
+              hint: "0 = no timeout" %>
+          <%= number_field_with_range f, :op_permission_level, label: "OP Permission Level", min: 1, max: 4,
+              hint: "1 (lowest) to 4 (highest)" %>
         </div>
-        <div class="form-group">
-          <%= f.label :player_movement_action_direction_threshold, "Action Direction Threshold", class: "form-label" %>
-          <%= f.number_field :player_movement_action_direction_threshold, min: 0, max: 1, step: 0.05, class: "form-input" %>
-          <p class="form-hint">0.0-1.0: How much attack/look direction can differ</p>
-        </div>
-      </div>
-      <div class="grid grid-cols-1 md-grid-cols-3 gap-4 mt-4">
-        <%= number_field_with_range f, :player_movement_score_threshold, label: "Movement Score Threshold", min: 0,
-            hint: "Incongruent intervals before flagging" %>
-        <div class="form-group">
-          <%= f.label :player_movement_distance_threshold, "Distance Threshold", class: "form-label" %>
-          <%= f.number_field :player_movement_distance_threshold, min: 0, step: 0.1, class: "form-input" %>
-          <p class="form-hint">Distance threshold for movement checks</p>
-        </div>
-        <%= number_field_with_range f, :player_movement_duration_threshold_in_ms, label: "Duration Threshold (ms)", min: 0,
-            hint: "Milliseconds threshold for movement validation" %>
-      </div>
-      <div class="grid grid-cols-1 md-grid-cols-3 gap-4 mt-4">
-        <%= toggle_field f, :correct_player_movement, label: "Correct Player Movement",
-            hint: "Server corrects positions on discrepancy" %>
-        <%= toggle_field f, :server_authoritative_block_breaking, label: "Authoritative Block Breaking",
-            hint: "Server validates block mining synchronously" %>
-        <div class="form-group">
-          <%= f.label :server_authoritative_block_breaking_pick_range_scalar, "Pick Range Scalar", class: "form-label" %>
-          <%= f.number_field :server_authoritative_block_breaking_pick_range_scalar, min: 0, step: 0.1, class: "form-input" %>
-          <p class="form-hint">Scalar for auth block breaking pick range</p>
+        <div class="grid grid-cols-1 md-grid-cols-3 gap-4 mt-4">
+          <%= toggle_field f, :force_gamemode, label: "Force Game Mode",
+              hint: "Force default mode on every join, not just first join" %>
+          <%= toggle_field f, :allow_cheats, label: "Allow Cheats",
+              hint: "Enable cheat commands for players" %>
+          <%= toggle_field f, :online_mode, label: "Online Mode (Xbox Live)",
+              hint: "Require Xbox Live authentication" %>
         </div>
       </div>
-    </div>
 
-    <!-- ==================== CHAT & INTERACTION ==================== -->
-    <div class="form-section">
-      <h3 class="form-section-title">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h12a2 2 0 012 2v6a2 2 0 01-2 2H8l-4 3v-3a2 2 0 01-2-2V6a2 2 0 012-2z"/></svg>
-        Chat & Interaction
-      </h3>
-      <div class="grid grid-cols-1 md-grid-cols-3 gap-4">
-        <%= select_field f, :chat_restriction,
-            MinecraftServer::CHAT_RESTRICTIONS.map { |c| [c, c] },
-            label: "Chat Restriction",
-            hint: "None = unrestricted, Dropped = messages silently dropped, Disabled = chat disabled" %>
-        <%= toggle_field f, :disable_player_interaction, label: "Disable Player Interaction",
-            hint: "Players ignore each other when interacting with world" %>
-      </div>
-    </div>
-
-    <!-- ==================== APPEARANCE ==================== -->
-    <div class="form-section">
-      <h3 class="form-section-title">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="10" cy="7" r="4"/><path d="M3 18c0-3.5 3-6 7-6s7 2.5 7 6"/></svg>
-        Appearance & Skins
-      </h3>
-      <div class="grid grid-cols-1 md-grid-cols-3 gap-4">
-        <%= toggle_field f, :disable_persona, label: "Disable Persona",
-            hint: "Disable persona/character creator features" %>
-        <%= toggle_field f, :disable_custom_skins, label: "Disable Custom Skins",
-            hint: "Block skins not from Character Creator" %>
-        <%= toggle_field f, :block_network_ids_are_hashes, label: "Block Network IDs as Hashes",
-            hint: "Send stable hashed block IDs instead of sequential" %>
-      </div>
-    </div>
-
-    <!-- ==================== LOGGING ==================== -->
-    <div class="form-section">
-      <h3 class="form-section-title">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h12v14H4z"/><path d="M7 8h6M7 11h6M7 14h4"/></svg>
-        Logging & Telemetry
-      </h3>
-      <div class="grid grid-cols-1 md-grid-cols-3 gap-4">
-        <%= toggle_field f, :content_log_file_enabled, label: "Content Log to File",
-            hint: "Log content errors to a file" %>
-        <%= select_field f, :content_log_level,
-            MinecraftServer::CONTENT_LOG_LEVELS.map { |l| [l.capitalize, l] },
-            label: "Content Log Level",
-            hint: "Verbosity of content logs" %>
-        <%= toggle_field f, :content_log_console_output_enabled, label: "Content Log to Console",
-            hint: "Output content logs to stdout" %>
-      </div>
-      <div class="grid grid-cols-1 md-grid-cols-3 gap-4 mt-4">
-        <%= toggle_field f, :emit_server_telemetry, label: "Server Telemetry",
-            hint: "Emit server telemetry data" %>
-        <%= toggle_field f, :msa_gamertags_only, label: "MSA Gamertags Only",
-            hint: "Only allow Microsoft Account gamertags" %>
-        <%= toggle_field f, :item_transaction_logging_enabled, label: "Item Transaction Logging",
-            hint: "Log item transactions" %>
-      </div>
-    </div>
-
-    <!-- ==================== SCRIPT DEBUGGING ==================== -->
-    <div class="form-section">
-      <h3 class="form-section-title">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 4v3M14 4v3M4 7h12M6 13v3M14 13v3M4 13h12"/><circle cx="10" cy="10" r="2"/></svg>
-        Script Debugging
-      </h3>
-      <div class="grid grid-cols-1 md-grid-cols-3 gap-4">
-        <%= toggle_field f, :allow_outbound_script_debugging, label: "Outbound Script Debugging",
-            hint: "Enable script debugger connect mode" %>
-        <%= toggle_field f, :allow_inbound_script_debugging, label: "Inbound Script Debugging",
-            hint: "Enable script debugger listen mode" %>
-        <%= number_field_with_range f, :force_inbound_debug_port, label: "Inbound Debug Port", min: 1024, max: 65535,
-            hint: "Lock the inbound debugger port (1024-65535)" %>
-      </div>
-      <div class="grid grid-cols-1 md-grid-cols-2 gap-4 mt-4">
-        <%= select_field f, :script_debugger_auto_attach,
-            MinecraftServer::DEBUGGER_AUTO_ATTACH_MODES.map { |m| [m.capitalize, m] },
-            label: "Auto Attach Mode",
-            hint: "disabled / connect / listen at level load" %>
-        <%= text_input f, :script_debugger_auto_attach_connect_address, label: "Auto Attach Address",
-            hint: "host:port for connect mode",
-            placeholder: "localhost:19144" %>
-      </div>
-    </div>
-
-    <!-- ==================== SCRIPT WATCHDOG ==================== -->
-    <div class="form-section">
-      <h3 class="form-section-title">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="10" cy="10" r="8"/><path d="M10 5v5l3 3"/></svg>
-        Script Watchdog
-      </h3>
-      <div class="grid grid-cols-1 md-grid-cols-2 gap-4">
-        <%= toggle_field f, :script_watchdog_enable, label: "Enable Watchdog",
-            hint: "Monitor script performance" %>
-        <%= toggle_field f, :script_watchdog_enable_exception_handling, label: "Exception Handling",
-            hint: "Enable watchdog exception handling via events" %>
-      </div>
-      <div class="grid grid-cols-1 md-grid-cols-2 gap-4 mt-4">
-        <%= toggle_field f, :script_watchdog_enable_shutdown, label: "Shutdown on Error",
-            hint: "Shut down on unhandled watchdog exception" %>
-        <%= toggle_field f, :script_watchdog_hang_exception, label: "Hang Exception",
-            hint: "Throw exception on script hang detection" %>
-      </div>
-      <div class="grid grid-cols-1 md-grid-cols-3 gap-4 mt-4">
-        <%= number_field_with_range f, :script_watchdog_hang_threshold, label: "Hang Threshold (ms)", min: 3000, max: 20000,
-            hint: "3000-20000 ms for single-tick hang" %>
-        <%= number_field_with_range f, :script_watchdog_spike_threshold, label: "Spike Threshold (ms)", min: 50, max: 500,
-            hint: "50-500 ms for single-tick spike" %>
-        <%= number_field_with_range f, :script_watchdog_slow_threshold, label: "Slow Threshold (ms)", min: 5, max: 50,
-            hint: "5-50 ms for slow scripts over multiple ticks" %>
-      </div>
-      <div class="grid grid-cols-1 md-grid-cols-2 gap-4 mt-4">
-        <%= number_field_with_range f, :script_watchdog_memory_warning, label: "Memory Warning (MB)", min: 0, max: 2000,
-            hint: "0-2000 MB: Warn when script memory exceeds this" %>
-        <%= number_field_with_range f, :script_watchdog_memory_limit, label: "Memory Limit (MB)", min: 0, max: 2000,
-            hint: "0-2000 MB: Save and shut down if exceeded" %>
-      </div>
-    </div>
-
-    <!-- ==================== CONTAINER ==================== -->
-    <div class="form-section">
-      <h3 class="form-section-title">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="6" width="16" height="10" rx="2"/><path d="M6 6V4a2 2 0 012-2h4a2 2 0 012 2v2"/><path d="M2 10h16"/></svg>
-        Container Settings
-      </h3>
-      <div class="grid grid-cols-1 md-grid-cols-2 gap-4">
-        <div class="form-group">
-          <%= f.label :version, "Bedrock Version", class: "form-label" %>
-          <%= f.text_field :version, class: "form-input", placeholder: "LATEST" %>
-          <p class="form-hint">LATEST, PREVIEW, or a specific version (e.g., 1.21.2.02)</p>
+      <!-- ==================== NETWORK ==================== -->
+      <div class="form-section">
+        <h3 class="form-section-title">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="10" cy="10" r="8"/><path d="M2 10h16M10 2c-2.5 3-2.5 11 0 16M10 2c2.5 3 2.5 11 0 16"/></svg>
+          Network
+        </h3>
+        <div class="grid grid-cols-1 md-grid-cols-3 gap-4">
+          <%= number_field_with_range f, :server_port, label: "IPv4 Port (UDP)", min: 1024, max: 65535,
+              hint: "Host-side UDP port for IPv4. Auto-assigned if blank." %>
+          <%= number_field_with_range f, :server_port_v6, label: "IPv6 Port (UDP)", min: 1024, max: 65535,
+              hint: "Host-side UDP port for IPv6. Auto-assigned if blank." %>
+          <div>
+            <%= toggle_field f, :enable_lan_visibility, label: "LAN Visibility",
+                hint: "Respond to LAN discovery broadcasts" %>
+          </div>
         </div>
-        <%= toggle_field f, :enable_ssh, label: "Enable SSH Console",
-            hint: "Remote console via SSH on port 2222" %>
       </div>
-    </div>
+
+      <!-- ==================== PERFORMANCE ==================== -->
+      <div class="form-section">
+        <h3 class="form-section-title">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 17V8l4-5h6l4 5v9H3z"/><path d="M7 17v-5h6v5"/></svg>
+          Performance
+        </h3>
+        <div class="grid grid-cols-1 md-grid-cols-3 gap-4">
+          <%= number_field_with_range f, :view_distance, label: "View Distance (chunks)", min: 5, max: 96,
+              hint: "5-96 chunks. Higher = more CPU/RAM" %>
+          <%= number_field_with_range f, :tick_distance, label: "Tick Distance (chunks)", min: 4, max: 12,
+              hint: "4-12 chunks simulated around players" %>
+          <%= number_field_with_range f, :max_threads, label: "Max Threads", min: 0,
+              hint: "0 = automatic (use all cores)" %>
+        </div>
+        <div class="grid grid-cols-1 md-grid-cols-3 gap-4 mt-4">
+          <%= number_field_with_range f, :compression_threshold, label: "Compression Threshold (bytes)", min: 1, max: 65535,
+              hint: "Min packet size before compression (1-65535)" %>
+          <%= select_field f, :compression_algorithm,
+              MinecraftServer::COMPRESSION_ALGORITHMS.map { |a| [a.upcase, a] },
+              label: "Compression Algorithm",
+              hint: "zlib = better ratio, snappy = faster" %>
+          <div class="form-group">
+            <%= f.label :server_build_radius_ratio, "Build Radius Ratio", class: "form-label" %>
+            <%= f.text_field :server_build_radius_ratio, class: "form-input", placeholder: "Disabled" %>
+            <p class="form-hint">"Disabled" or 0.0-1.0. Ratio of view distance for server-side generation.</p>
+          </div>
+        </div>
+        <div class="mt-4">
+          <%= toggle_field f, :client_side_chunk_generation_enabled, label: "Client-Side Chunk Generation",
+              hint: "Allow clients to generate visual chunks locally" %>
+        </div>
+      </div>
+
+      <!-- ==================== ACCESS CONTROL ==================== -->
+      <div class="form-section">
+        <h3 class="form-section-title">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="9" width="14" height="9" rx="2"/><path d="M6 9V6a4 4 0 018 0v3"/><circle cx="10" cy="14" r="1.5"/></svg>
+          Access Control
+        </h3>
+        <div class="grid grid-cols-1 md-grid-cols-2 gap-4">
+          <%= toggle_field f, :allow_list, label: "Enable Allow List",
+              hint: "Require players to be in allowlist.json" %>
+          <%= toggle_field f, :texturepack_required, label: "Texture Pack Required",
+              hint: "Force clients to use server resource packs" %>
+        </div>
+        <div class="grid grid-cols-1 md-grid-cols-2 gap-4 mt-4">
+          <%= text_input f, :allow_list_users, label: "Allow List Users",
+              hint: "Comma-separated gamertags, optionally with XUIDs: player1:XUID1,player2:XUID2",
+              placeholder: "Steve:1234567890,Alex:0987654321" %>
+          <%= text_input f, :members, label: "Members (XUIDs)",
+              hint: "Comma-separated XUIDs for member permissions",
+              placeholder: "1234567890" %>
+        </div>
+        <div class="grid grid-cols-1 md-grid-cols-2 gap-4 mt-4">
+          <%= text_input f, :visitors, label: "Visitors (XUIDs)",
+              hint: "Comma-separated XUIDs for visitor permissions",
+              placeholder: "1234567890" %>
+        </div>
+      </div>
+
+      <!-- ==================== ANTI-CHEAT ==================== -->
+      <div class="form-section">
+        <h3 class="form-section-title">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 2l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V5l7-3z"/><path d="M7 10l2 2 4-4"/></svg>
+          Anti-Cheat / Movement Authority
+        </h3>
+        <div class="grid grid-cols-1 md-grid-cols-3 gap-4">
+          <%= select_field f, :server_authoritative_movement,
+              MinecraftServer::MOVEMENT_AUTHORITIES.map { |m| [m, m] },
+              label: "Movement Authority",
+              hint: "server-auth = server validates movement" %>
+          <div class="form-group">
+            <%= f.label :player_position_acceptance_threshold, "Position Acceptance Threshold", class: "form-label" %>
+            <%= f.number_field :player_position_acceptance_threshold, min: 0, step: 0.1, class: "form-input" %>
+            <p class="form-hint">Tolerance for position discrepancies (>= 0.0)</p>
+          </div>
+          <div class="form-group">
+            <%= f.label :player_movement_action_direction_threshold, "Action Direction Threshold", class: "form-label" %>
+            <%= f.number_field :player_movement_action_direction_threshold, min: 0, max: 1, step: 0.05, class: "form-input" %>
+            <p class="form-hint">0.0-1.0: How much attack/look direction can differ</p>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md-grid-cols-3 gap-4 mt-4">
+          <%= number_field_with_range f, :player_movement_score_threshold, label: "Movement Score Threshold", min: 0,
+              hint: "Incongruent intervals before flagging" %>
+          <div class="form-group">
+            <%= f.label :player_movement_distance_threshold, "Distance Threshold", class: "form-label" %>
+            <%= f.number_field :player_movement_distance_threshold, min: 0, step: 0.1, class: "form-input" %>
+            <p class="form-hint">Distance threshold for movement checks</p>
+          </div>
+          <%= number_field_with_range f, :player_movement_duration_threshold_in_ms, label: "Duration Threshold (ms)", min: 0,
+              hint: "Milliseconds threshold for movement validation" %>
+        </div>
+        <div class="grid grid-cols-1 md-grid-cols-3 gap-4 mt-4">
+          <%= toggle_field f, :correct_player_movement, label: "Correct Player Movement",
+              hint: "Server corrects positions on discrepancy" %>
+          <%= toggle_field f, :server_authoritative_block_breaking, label: "Authoritative Block Breaking",
+              hint: "Server validates block mining synchronously" %>
+          <div class="form-group">
+            <%= f.label :server_authoritative_block_breaking_pick_range_scalar, "Pick Range Scalar", class: "form-label" %>
+            <%= f.number_field :server_authoritative_block_breaking_pick_range_scalar, min: 0, step: 0.1, class: "form-input" %>
+            <p class="form-hint">Scalar for auth block breaking pick range</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== CHAT & INTERACTION ==================== -->
+      <div class="form-section">
+        <h3 class="form-section-title">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h12a2 2 0 012 2v6a2 2 0 01-2 2H8l-4 3v-3a2 2 0 01-2-2V6a2 2 0 012-2z"/></svg>
+          Chat & Interaction
+        </h3>
+        <div class="grid grid-cols-1 md-grid-cols-3 gap-4">
+          <%= select_field f, :chat_restriction,
+              MinecraftServer::CHAT_RESTRICTIONS.map { |c| [c, c] },
+              label: "Chat Restriction",
+              hint: "None = unrestricted, Dropped = messages silently dropped, Disabled = chat disabled" %>
+          <%= toggle_field f, :disable_player_interaction, label: "Disable Player Interaction",
+              hint: "Players ignore each other when interacting with world" %>
+        </div>
+      </div>
+
+      <!-- ==================== APPEARANCE ==================== -->
+      <div class="form-section">
+        <h3 class="form-section-title">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="10" cy="7" r="4"/><path d="M3 18c0-3.5 3-6 7-6s7 2.5 7 6"/></svg>
+          Appearance & Skins
+        </h3>
+        <div class="grid grid-cols-1 md-grid-cols-3 gap-4">
+          <%= toggle_field f, :disable_persona, label: "Disable Persona",
+              hint: "Disable persona/character creator features" %>
+          <%= toggle_field f, :disable_custom_skins, label: "Disable Custom Skins",
+              hint: "Block skins not from Character Creator" %>
+          <%= toggle_field f, :block_network_ids_are_hashes, label: "Block Network IDs as Hashes",
+              hint: "Send stable hashed block IDs instead of sequential" %>
+        </div>
+      </div>
+
+      <!-- ==================== LOGGING ==================== -->
+      <div class="form-section">
+        <h3 class="form-section-title">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h12v14H4z"/><path d="M7 8h6M7 11h6M7 14h4"/></svg>
+          Logging & Telemetry
+        </h3>
+        <div class="grid grid-cols-1 md-grid-cols-3 gap-4">
+          <%= toggle_field f, :content_log_file_enabled, label: "Content Log to File",
+              hint: "Log content errors to a file" %>
+          <%= select_field f, :content_log_level,
+              MinecraftServer::CONTENT_LOG_LEVELS.map { |l| [l.capitalize, l] },
+              label: "Content Log Level",
+              hint: "Verbosity of content logs" %>
+          <%= toggle_field f, :content_log_console_output_enabled, label: "Content Log to Console",
+              hint: "Output content logs to stdout" %>
+        </div>
+        <div class="grid grid-cols-1 md-grid-cols-3 gap-4 mt-4">
+          <%= toggle_field f, :emit_server_telemetry, label: "Server Telemetry",
+              hint: "Emit server telemetry data" %>
+          <%= toggle_field f, :msa_gamertags_only, label: "MSA Gamertags Only",
+              hint: "Only allow Microsoft Account gamertags" %>
+          <%= toggle_field f, :item_transaction_logging_enabled, label: "Item Transaction Logging",
+              hint: "Log item transactions" %>
+        </div>
+      </div>
+
+      <!-- ==================== SCRIPT DEBUGGING ==================== -->
+      <div class="form-section">
+        <h3 class="form-section-title">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 4v3M14 4v3M4 7h12M6 13v3M14 13v3M4 13h12"/><circle cx="10" cy="10" r="2"/></svg>
+          Script Debugging
+        </h3>
+        <div class="grid grid-cols-1 md-grid-cols-3 gap-4">
+          <%= toggle_field f, :allow_outbound_script_debugging, label: "Outbound Script Debugging",
+              hint: "Enable script debugger connect mode" %>
+          <%= toggle_field f, :allow_inbound_script_debugging, label: "Inbound Script Debugging",
+              hint: "Enable script debugger listen mode" %>
+          <%= number_field_with_range f, :force_inbound_debug_port, label: "Inbound Debug Port", min: 1024, max: 65535,
+              hint: "Lock the inbound debugger port (1024-65535)" %>
+        </div>
+        <div class="grid grid-cols-1 md-grid-cols-2 gap-4 mt-4">
+          <%= select_field f, :script_debugger_auto_attach,
+              MinecraftServer::DEBUGGER_AUTO_ATTACH_MODES.map { |m| [m.capitalize, m] },
+              label: "Auto Attach Mode",
+              hint: "disabled / connect / listen at level load" %>
+          <%= text_input f, :script_debugger_auto_attach_connect_address, label: "Auto Attach Address",
+              hint: "host:port for connect mode",
+              placeholder: "localhost:19144" %>
+        </div>
+      </div>
+
+      <!-- ==================== SCRIPT WATCHDOG ==================== -->
+      <div class="form-section">
+        <h3 class="form-section-title">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="10" cy="10" r="8"/><path d="M10 5v5l3 3"/></svg>
+          Script Watchdog
+        </h3>
+        <div class="grid grid-cols-1 md-grid-cols-2 gap-4">
+          <%= toggle_field f, :script_watchdog_enable, label: "Enable Watchdog",
+              hint: "Monitor script performance" %>
+          <%= toggle_field f, :script_watchdog_enable_exception_handling, label: "Exception Handling",
+              hint: "Enable watchdog exception handling via events" %>
+        </div>
+        <div class="grid grid-cols-1 md-grid-cols-2 gap-4 mt-4">
+          <%= toggle_field f, :script_watchdog_enable_shutdown, label: "Shutdown on Error",
+              hint: "Shut down on unhandled watchdog exception" %>
+          <%= toggle_field f, :script_watchdog_hang_exception, label: "Hang Exception",
+              hint: "Throw exception on script hang detection" %>
+        </div>
+        <div class="grid grid-cols-1 md-grid-cols-3 gap-4 mt-4">
+          <%= number_field_with_range f, :script_watchdog_hang_threshold, label: "Hang Threshold (ms)", min: 3000, max: 20000,
+              hint: "3000-20000 ms for single-tick hang" %>
+          <%= number_field_with_range f, :script_watchdog_spike_threshold, label: "Spike Threshold (ms)", min: 50, max: 500,
+              hint: "50-500 ms for single-tick spike" %>
+          <%= number_field_with_range f, :script_watchdog_slow_threshold, label: "Slow Threshold (ms)", min: 5, max: 50,
+              hint: "5-50 ms for slow scripts over multiple ticks" %>
+        </div>
+        <div class="grid grid-cols-1 md-grid-cols-2 gap-4 mt-4">
+          <%= number_field_with_range f, :script_watchdog_memory_warning, label: "Memory Warning (MB)", min: 0, max: 2000,
+              hint: "0-2000 MB: Warn when script memory exceeds this" %>
+          <%= number_field_with_range f, :script_watchdog_memory_limit, label: "Memory Limit (MB)", min: 0, max: 2000,
+              hint: "0-2000 MB: Save and shut down if exceeded" %>
+        </div>
+      </div>
+
+      <!-- ==================== CONTAINER ==================== -->
+      <div class="form-section">
+        <h3 class="form-section-title">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="6" width="16" height="10" rx="2"/><path d="M6 6V4a2 2 0 012-2h4a2 2 0 012 2v2"/><path d="M2 10h16"/></svg>
+          Container Settings
+        </h3>
+        <div class="grid grid-cols-1 md-grid-cols-2 gap-4">
+          <div class="form-group">
+            <%= f.label :version, "Bedrock Version", class: "form-label" %>
+            <%= f.text_field :version, class: "form-input", placeholder: "LATEST" %>
+            <p class="form-hint">LATEST, PREVIEW, or a specific version (e.g., 1.21.2.02)</p>
+          </div>
+          <%= toggle_field f, :enable_ssh, label: "Enable SSH Console",
+              hint: "Remote console via SSH on port 2222" %>
+        </div>
+      </div>
+
+    </div><!-- /advanced-settings -->
 
     <!-- ==================== SUBMIT ==================== -->
     <div class="form-section">
@@ -354,3 +385,24 @@
 
   </div>
 <% end %>
+
+<script>
+(function() {
+  var advancedSection = document.getElementById("advanced-settings");
+  var toggleBtn = document.getElementById("toggle-advanced");
+  var isEditing = <%= server.persisted? ? "true" : "false" %>;
+  var expanded = isEditing;
+
+  function apply() {
+    advancedSection.style.display = expanded ? "block" : "none";
+    toggleBtn.textContent = expanded ? "Hide Advanced Settings" : "Show Advanced Settings";
+  }
+
+  toggleBtn.addEventListener("click", function() {
+    expanded = !expanded;
+    apply();
+  });
+
+  apply();
+})();
+</script>
