@@ -72,10 +72,23 @@
         Operators
         <span class="text-gray-500 text-sm font-normal">(optional)</span>
       </h3>
-      <div class="grid grid-cols-1 gap-4">
-        <%= text_input f, :ops, label: "Operator XUIDs",
-            hint: "Optional. Comma-separated Xbox User IDs to grant operator (admin) permissions. You can add these later.",
-            placeholder: "1234567890,0987654321" %>
+      <% if @players.present? %>
+        <p class="form-hint mb-2">Select players to grant operator (admin) permissions.</p>
+        <ul class="player-picker" data-field="minecraft_server_ops" data-format="xuid">
+          <% @players.each do |player| %>
+            <li>
+              <input type="checkbox" id="ops-player-<%= player.id %>" data-xuid="<%= player.xuid %>" data-gamertag="<%= player.gamertag %>">
+              <label for="ops-player-<%= player.id %>"><%= player.gamertag %> <span class="xuid"><%= player.xuid %></span></label>
+            </li>
+          <% end %>
+        </ul>
+      <% else %>
+        <p class="form-hint">No players in directory yet. <a href="<%= new_player_path %>" class="text-emerald-400">Add players</a> to select them here, or type XUIDs manually below.</p>
+      <% end %>
+      <div class="form-group mt-2">
+        <%= f.label :ops, "Operator XUIDs", class: "form-label" %>
+        <%= f.text_field :ops, class: "form-input", id: "minecraft_server_ops", placeholder: "1234567890,0987654321" %>
+        <p class="form-hint">Optional. Comma-separated Xbox User IDs, or use the checkboxes above.</p>
       </div>
     </div>
 
@@ -178,18 +191,62 @@
           <%= toggle_field f, :texturepack_required, label: "Texture Pack Required",
               hint: "Force clients to use server resource packs" %>
         </div>
-        <div class="grid grid-cols-1 md-grid-cols-2 gap-4 mt-4">
-          <%= text_input f, :allow_list_users, label: "Allow List Users",
-              hint: "Comma-separated gamertags, optionally with XUIDs: player1:XUID1,player2:XUID2",
-              placeholder: "Steve:1234567890,Alex:0987654321" %>
-          <%= text_input f, :members, label: "Members (XUIDs)",
-              hint: "Comma-separated XUIDs for member permissions",
-              placeholder: "1234567890" %>
+
+        <!-- Allow List Users -->
+        <div class="mt-4">
+          <label class="form-label">Allow List Users</label>
+          <% if @players.present? %>
+            <ul class="player-picker" data-field="minecraft_server_allow_list_users" data-format="allow_list">
+              <% @players.each do |player| %>
+                <li>
+                  <input type="checkbox" id="allow-list-player-<%= player.id %>" data-xuid="<%= player.xuid %>" data-gamertag="<%= player.gamertag %>">
+                  <label for="allow-list-player-<%= player.id %>"><%= player.gamertag %> <span class="xuid"><%= player.xuid %></span></label>
+                </li>
+              <% end %>
+            </ul>
+          <% end %>
+          <div class="form-group mt-2">
+            <%= f.text_field :allow_list_users, class: "form-input", id: "minecraft_server_allow_list_users", placeholder: "Steve:1234567890,Alex:0987654321" %>
+            <p class="form-hint">Comma-separated gamertag:XUID pairs, or use checkboxes above.</p>
+          </div>
         </div>
-        <div class="grid grid-cols-1 md-grid-cols-2 gap-4 mt-4">
-          <%= text_input f, :visitors, label: "Visitors (XUIDs)",
-              hint: "Comma-separated XUIDs for visitor permissions",
-              placeholder: "1234567890" %>
+
+        <!-- Members -->
+        <div class="mt-4">
+          <label class="form-label">Members</label>
+          <% if @players.present? %>
+            <ul class="player-picker" data-field="minecraft_server_members" data-format="xuid">
+              <% @players.each do |player| %>
+                <li>
+                  <input type="checkbox" id="members-player-<%= player.id %>" data-xuid="<%= player.xuid %>" data-gamertag="<%= player.gamertag %>">
+                  <label for="members-player-<%= player.id %>"><%= player.gamertag %> <span class="xuid"><%= player.xuid %></span></label>
+                </li>
+              <% end %>
+            </ul>
+          <% end %>
+          <div class="form-group mt-2">
+            <%= f.text_field :members, class: "form-input", id: "minecraft_server_members", placeholder: "1234567890" %>
+            <p class="form-hint">Comma-separated XUIDs for member permissions, or use checkboxes above.</p>
+          </div>
+        </div>
+
+        <!-- Visitors -->
+        <div class="mt-4">
+          <label class="form-label">Visitors</label>
+          <% if @players.present? %>
+            <ul class="player-picker" data-field="minecraft_server_visitors" data-format="xuid">
+              <% @players.each do |player| %>
+                <li>
+                  <input type="checkbox" id="visitors-player-<%= player.id %>" data-xuid="<%= player.xuid %>" data-gamertag="<%= player.gamertag %>">
+                  <label for="visitors-player-<%= player.id %>"><%= player.gamertag %> <span class="xuid"><%= player.xuid %></span></label>
+                </li>
+              <% end %>
+            </ul>
+          <% end %>
+          <div class="form-group mt-2">
+            <%= f.text_field :visitors, class: "form-input", id: "minecraft_server_visitors", placeholder: "1234567890" %>
+            <p class="form-hint">Comma-separated XUIDs for visitor permissions, or use checkboxes above.</p>
+          </div>
         </div>
       </div>
 
@@ -388,21 +445,67 @@
 
 <script>
 (function() {
+  // === Advanced settings toggle ===
   var advancedSection = document.getElementById("advanced-settings");
   var toggleBtn = document.getElementById("toggle-advanced");
   var isEditing = <%= server.persisted? ? "true" : "false" %>;
   var expanded = isEditing;
 
-  function apply() {
+  function applyToggle() {
     advancedSection.style.display = expanded ? "block" : "none";
     toggleBtn.textContent = expanded ? "Hide Advanced Settings" : "Show Advanced Settings";
   }
 
   toggleBtn.addEventListener("click", function() {
     expanded = !expanded;
-    apply();
+    applyToggle();
   });
 
-  apply();
+  applyToggle();
+
+  // === Player picker sync ===
+  document.querySelectorAll(".player-picker").forEach(function(picker) {
+    var fieldId = picker.getAttribute("data-field");
+    var format = picker.getAttribute("data-format");
+    var field = document.getElementById(fieldId);
+    if (!field) return;
+
+    var checkboxes = picker.querySelectorAll("input[type=checkbox]");
+
+    // On load: pre-check boxes matching existing field value
+    function currentValues() {
+      return field.value.split(",").map(function(s) { return s.trim(); }).filter(Boolean);
+    }
+
+    function initCheckboxes() {
+      var vals = currentValues();
+      checkboxes.forEach(function(cb) {
+        var xuid = cb.getAttribute("data-xuid");
+        var gamertag = cb.getAttribute("data-gamertag");
+        var entry = gamertag + ":" + xuid;
+        cb.checked = (format === "allow_list")
+          ? vals.indexOf(entry) !== -1 || vals.indexOf(gamertag) !== -1
+          : vals.indexOf(xuid) !== -1;
+      });
+    }
+
+    // On checkbox change: rebuild field value from checked boxes
+    function syncField() {
+      var parts = [];
+      checkboxes.forEach(function(cb) {
+        if (!cb.checked) return;
+        var xuid = cb.getAttribute("data-xuid");
+        var gamertag = cb.getAttribute("data-gamertag");
+        parts.push(format === "allow_list" ? gamertag + ":" + xuid : xuid);
+      });
+      field.value = parts.join(",");
+    }
+
+    checkboxes.forEach(function(cb) {
+      cb.addEventListener("change", syncField);
+    });
+
+    initCheckboxes();
+  });
 })();
 </script>

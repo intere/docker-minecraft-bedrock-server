@@ -97,10 +97,10 @@
     <table class="detail-table">
       <tr><th>Allow List</th><td><%= bool_display(@server.allow_list) %></td></tr>
       <tr><th>Texture Pack Required</th><td><%= bool_display(@server.texturepack_required) %></td></tr>
-      <tr><th>Allow List Users</th><td><%= @server.allow_list_users.present? ? @server.allow_list_users : "(none)" %></td></tr>
-      <tr><th>Operators (XUIDs)</th><td><%= @server.ops.present? ? @server.ops : "(none)" %></td></tr>
-      <tr><th>Members (XUIDs)</th><td><%= @server.members.present? ? @server.members : "(none)" %></td></tr>
-      <tr><th>Visitors (XUIDs)</th><td><%= @server.visitors.present? ? @server.visitors : "(none)" %></td></tr>
+      <tr><th>Allow List Users</th><td><%= display_allow_list_users(@server.allow_list_users) %></td></tr>
+      <tr><th>Operators</th><td><%= display_player_xuids(@server.ops) %></td></tr>
+      <tr><th>Members</th><td><%= display_player_xuids(@server.members) %></td></tr>
+      <tr><th>Visitors</th><td><%= display_player_xuids(@server.visitors) %></td></tr>
     </table>
   </div>
 </div>

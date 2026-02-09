@@ -1,0 +1,35 @@
+<%= form_with(model: player, class: "card") do |f| %>
+  <div class="card-body">
+
+    <% if player.errors.any? %>
+      <ul class="error-list">
+        <% player.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    <% end %>
+
+    <div class="form-section">
+      <div class="grid grid-cols-1 md-grid-cols-2 gap-4">
+        <div class="form-group">
+          <%= f.label :gamertag, "Gamertag", class: "form-label" %>
+          <%= f.text_field :gamertag, class: "form-input", placeholder: "PlayerName" %>
+          <p class="form-hint">The player's Xbox/Minecraft gamertag.</p>
+        </div>
+        <div class="form-group">
+          <%= f.label :xuid, "XUID", class: "form-label" %>
+          <%= f.text_field :xuid, class: "form-input", placeholder: "1234567890123456" %>
+          <p class="form-hint">The player's Xbox User ID. You can find this on sites like mcprofile.net.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="flex items-center gap-3">
+        <%= f.submit(player.persisted? ? "Update Player" : "Add Player", class: "btn btn-primary btn-lg") %>
+        <a href="<%= players_path %>" class="btn btn-secondary btn-lg">Cancel</a>
+      </div>
+    </div>
+
+  </div>
+<% end %>

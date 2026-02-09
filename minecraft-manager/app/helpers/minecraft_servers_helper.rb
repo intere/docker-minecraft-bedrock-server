@@ -51,6 +51,44 @@ module MinecraftServersHelper
     end
   end
 
+  def display_player_xuids(xuid_string)
+    return content_tag(:span, "(none)", class: "text-gray-500") if xuid_string.blank?
+
+    xuids = xuid_string.split(",").map(&:strip).reject(&:blank?)
+    players_by_xuid = Player.where(xuid: xuids).index_by(&:xuid)
+
+    tags = xuids.map do |xuid|
+      if (player = players_by_xuid[xuid])
+        content_tag(:span, player.gamertag, title: xuid, class: "badge badge-player")
+      else
+        content_tag(:span, xuid, class: "badge badge-player-unknown")
+      end
+    end
+
+    safe_join(tags, " ")
+  end
+
+  def display_allow_list_users(value)
+    return content_tag(:span, "(none)", class: "text-gray-500") if value.blank?
+
+    entries = value.split(",").map(&:strip).reject(&:blank?)
+    xuids = entries.map { |e| e.include?(":") ? e.split(":", 2).last : nil }.compact
+    players_by_xuid = Player.where(xuid: xuids).index_by(&:xuid)
+
+    tags = entries.map do |entry|
+      if entry.include?(":")
+        gamertag, xuid = entry.split(":", 2)
+        player = players_by_xuid[xuid]
+        display_name = player ? player.gamertag : gamertag
+        content_tag(:span, display_name, title: xuid, class: "badge badge-player")
+      else
+        content_tag(:span, entry, class: "badge badge-player")
+      end
+    end
+
+    safe_join(tags, " ")
+  end
+
   def bool_display(value)
     value ? content_tag(:span, "Yes", class: "text-emerald-400") : content_tag(:span, "No", class: "text-gray-500")
   end

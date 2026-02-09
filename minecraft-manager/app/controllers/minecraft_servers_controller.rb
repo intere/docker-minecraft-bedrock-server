@@ -11,6 +11,7 @@ class MinecraftServersController < ApplicationController
 
   def new
     @server = MinecraftServer.new
+    @players = Player.all
   end
 
   def create
@@ -18,17 +19,20 @@ class MinecraftServersController < ApplicationController
     if @server.save
       redirect_to @server, notice: "Minecraft server '#{@server.server_name}' was created."
     else
+      @players = Player.all
       render :new, status: :unprocessable_entity
     end
   end
 
   def edit
+    @players = Player.all
   end
 
   def update
     if @server.update(server_params)
       redirect_to @server, notice: "Server configuration updated."
     else
+      @players = Player.all
       render :edit, status: :unprocessable_entity
     end
   end

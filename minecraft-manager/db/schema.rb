@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_07_000001) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_09_132012) do
   create_table "minecraft_servers", force: :cascade do |t|
     t.boolean "allow_cheats", default: false
     t.boolean "allow_inbound_script_debugging", default: false
@@ -85,5 +85,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_07_000001) do
     t.index ["container_name"], name: "index_minecraft_servers_on_container_name", unique: true
     t.index ["server_port"], name: "index_minecraft_servers_on_server_port", unique: true
     t.index ["server_port_v6"], name: "index_minecraft_servers_on_server_port_v6", unique: true
+  end
+
+  create_table "players", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "gamertag", null: false
+    t.datetime "updated_at", null: false
+    t.string "xuid", null: false
+    t.index ["gamertag"], name: "index_players_on_gamertag", unique: true
+    t.index ["xuid"], name: "index_players_on_xuid", unique: true
   end
 end

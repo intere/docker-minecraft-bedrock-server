@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  resources :players, except: [:show]
+
   resources :minecraft_servers do
     member do
       post :start
