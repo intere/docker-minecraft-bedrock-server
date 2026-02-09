@@ -100,8 +100,6 @@ class MinecraftServer < ApplicationRecord
       "DEFAULT_PLAYER_PERMISSION_LEVEL" => default_player_permission_level,
       "PLAYER_IDLE_TIMEOUT" => player_idle_timeout.to_s,
       "OP_PERMISSION_LEVEL" => op_permission_level.to_s,
-      "SERVER_PORT" => server_port.to_s,
-      "SERVER_PORT_V6" => server_port_v6.to_s,
       "ENABLE_LAN_VISIBILITY" => enable_lan_visibility.to_s,
       "LEVEL_NAME" => level_name,
       "LEVEL_SEED" => level_seed.to_s,

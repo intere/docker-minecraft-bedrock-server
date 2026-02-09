@@ -68,7 +68,10 @@ class MinecraftServersController < ApplicationController
 
   def logs
     @logs = DockerService.server_logs(@server, lines: 200)
-    render :logs
+    respond_to do |format|
+      format.html { render :logs }
+      format.json { render json: { logs: @logs } }
+    end
   end
 
   private
