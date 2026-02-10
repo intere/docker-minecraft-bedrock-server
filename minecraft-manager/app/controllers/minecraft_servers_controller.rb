@@ -1,5 +1,5 @@
 class MinecraftServersController < ApplicationController
-  before_action :set_server, only: %i[show edit update destroy start stop restart logs]
+  before_action :set_server, only: %i[show edit update destroy start stop restart logs assign_pack unassign_pack]
 
   def index
     DockerService.sync_all_statuses
@@ -7,6 +7,8 @@ class MinecraftServersController < ApplicationController
   end
 
   def show
+    @assigned_packs = @server.packs
+    @available_packs = Pack.where.not(id: @assigned_packs.select(:id))
   end
 
   def new
@@ -75,6 +77,26 @@ class MinecraftServersController < ApplicationController
     respond_to do |format|
       format.html { render :logs }
       format.json { render json: { logs: @logs } }
+    end
+  end
+
+  def assign_pack
+    pack = Pack.find(params[:pack_id])
+    result = PackService.assign(@server, pack)
+    if result[:success]
+      redirect_to @server, notice: result[:message]
+    else
+      redirect_to @server, alert: result[:message]
+    end
+  end
+
+  def unassign_pack
+    pack = Pack.find(params[:pack_id])
+    result = PackService.unassign(@server, pack)
+    if result[:success]
+      redirect_to @server, notice: result[:message]
+    else
+      redirect_to @server, alert: result[:message]
     end
   end
 

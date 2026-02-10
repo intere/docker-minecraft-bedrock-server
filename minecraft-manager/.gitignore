@@ -30,3 +30,6 @@
 # Server data volumes
 /server-data/
 /server-compose/
+
+# Pack library
+/pack-library/

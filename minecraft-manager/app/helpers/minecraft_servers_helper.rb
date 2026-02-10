@@ -111,4 +111,5 @@ module MinecraftServersHelper
     else "text-gray-400"
     end
   end
+
 end

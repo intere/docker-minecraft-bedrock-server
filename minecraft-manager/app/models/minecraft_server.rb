@@ -1,4 +1,7 @@
 class MinecraftServer < ApplicationRecord
+  has_many :server_packs, dependent: :destroy
+  has_many :packs, through: :server_packs
+
   # -- Enumerations --
   GAMEMODES = %w[survival creative adventure].freeze
   DIFFICULTIES = %w[peaceful easy normal hard].freeze

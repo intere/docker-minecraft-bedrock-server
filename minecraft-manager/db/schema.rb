@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_09_132012) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_09_160000) do
   create_table "minecraft_servers", force: :cascade do |t|
     t.boolean "allow_cheats", default: false
     t.boolean "allow_inbound_script_debugging", default: false
@@ -87,6 +87,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_09_132012) do
     t.index ["server_port_v6"], name: "index_minecraft_servers_on_server_port_v6", unique: true
   end
 
+  create_table "packs", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "file_path", null: false
+    t.string "name", null: false
+    t.string "pack_type", null: false
+    t.datetime "updated_at", null: false
+    t.string "uuid", null: false
+    t.string "version", null: false
+    t.index ["uuid"], name: "index_packs_on_uuid", unique: true
+  end
+
   create_table "players", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "gamertag", null: false
@@ -95,4 +106,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_09_132012) do
     t.index ["gamertag"], name: "index_players_on_gamertag", unique: true
     t.index ["xuid"], name: "index_players_on_xuid", unique: true
   end
+
+  create_table "server_packs", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "minecraft_server_id", null: false
+    t.integer "pack_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["minecraft_server_id", "pack_id"], name: "index_server_packs_on_minecraft_server_id_and_pack_id", unique: true
+    t.index ["minecraft_server_id"], name: "index_server_packs_on_minecraft_server_id"
+    t.index ["pack_id"], name: "index_server_packs_on_pack_id"
+  end
+
+  add_foreign_key "server_packs", "minecraft_servers"
+  add_foreign_key "server_packs", "packs"
 end
