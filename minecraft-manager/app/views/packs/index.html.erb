@@ -1,0 +1,42 @@
+<div class="flex items-center justify-between mb-6">
+  <h1 class="text-2xl font-bold">Packs</h1>
+  <a href="<%= new_pack_path %>" class="btn btn-primary">+ Upload Pack</a>
+</div>
+
+<% if @packs.any? %>
+  <div class="card">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Version</th>
+          <th>Servers</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @packs.each do |pack| %>
+          <tr>
+            <td class="font-medium"><%= pack.name %></td>
+            <td><span class="badge-pack-type badge-pack-<%= pack.pack_type %>"><%= pack.type_label %></span></td>
+            <td class="text-gray-400 text-sm"><%= pack.version_display %></td>
+            <td class="text-gray-400 text-sm"><%= pack.minecraft_servers.count %></td>
+            <td class="text-sm">
+              <%= button_to "Delete", pack_path(pack), method: :delete, class: "btn btn-danger btn-sm", data: { turbo_confirm: "Delete '#{pack.name}'? This will remove it from all servers." } %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% else %>
+  <div class="empty-state">
+    <div class="empty-state-icon">&#x1F4E6;</div>
+    <div class="empty-state-title">No Packs Uploaded</div>
+    <p class="text-gray-500">Upload behavior or resource packs (.mcpack, .mcaddon, .zip) to get started.</p>
+    <div class="mt-4">
+      <a href="<%= new_pack_path %>" class="btn btn-primary">+ Upload Pack</a>
+    </div>
+  </div>
+<% end %>

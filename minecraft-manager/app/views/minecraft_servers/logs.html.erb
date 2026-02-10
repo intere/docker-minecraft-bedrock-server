@@ -1,0 +1,72 @@
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <h1 class="text-2xl font-bold">Logs: <%= @server.server_name %></h1>
+    <p class="text-gray-400 text-sm mt-1"><%= @server.container_name %></p>
+  </div>
+  <div class="flex items-center gap-2">
+    <a href="<%= minecraft_server_path(@server) %>" class="btn btn-secondary">Back to Server</a>
+    <button id="toggle-tail" class="btn btn-info">Pause</button>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header flex items-center justify-between">
+    <h2 class="text-lg font-semibold text-emerald-400">Server Output (last 200 lines)</h2>
+    <%= status_badge(@server) %>
+  </div>
+  <div class="card-body p-0">
+    <div id="log-output" class="log-viewer"><%= @logs %></div>
+  </div>
+</div>
+
+<script>
+(function() {
+  const logOutput = document.getElementById("log-output");
+  const toggleBtn = document.getElementById("toggle-tail");
+  const pollUrl = "<%= logs_minecraft_server_path(@server, format: :json) %>";
+  let tailing = true;
+  let timerId = null;
+
+  function scrollToBottom() {
+    logOutput.scrollTop = logOutput.scrollHeight;
+  }
+
+  function fetchLogs() {
+    fetch(pollUrl)
+      .then(function(response) { return response.json(); })
+      .then(function(data) {
+        logOutput.textContent = data.logs;
+        scrollToBottom();
+      })
+      .catch(function() { /* ignore fetch errors, retry next tick */ });
+  }
+
+  function startPolling() {
+    if (!timerId) {
+      timerId = setInterval(fetchLogs, 2000);
+    }
+  }
+
+  function stopPolling() {
+    if (timerId) {
+      clearInterval(timerId);
+      timerId = null;
+    }
+  }
+
+  toggleBtn.addEventListener("click", function() {
+    tailing = !tailing;
+    if (tailing) {
+      toggleBtn.textContent = "Pause";
+      startPolling();
+      fetchLogs();
+    } else {
+      toggleBtn.textContent = "Resume";
+      stopPolling();
+    }
+  });
+
+  scrollToBottom();
+  startPolling();
+})();
+</script>
